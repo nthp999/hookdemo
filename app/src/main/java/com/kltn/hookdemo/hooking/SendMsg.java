@@ -32,8 +32,7 @@ public class SendMsg {
     private static String DATA = null;
     private static boolean CHECK = false;
 
-    private Context context = (Context) AndroidAppHelper.currentApplication();
-    private DatabaseSupport db = new DatabaseSupport(context);
+
     private MyBroadcastSender mybrSender = new MyBroadcastSender();
 
     public void starthook(XC_LoadPackage.LoadPackageParam lpparam) {
@@ -62,13 +61,6 @@ public class SendMsg {
 
                         mybrSender.brSender(DATA + " contains sensitive value!");
 
-
-                        db.addLog();
-                        long val = db.addLog();
-                        if (val > 0 )
-                        {
-                            Log.e("KLTN2021 ", "Ghi database thanh cong");
-                        }
                     }
                 }
 
