@@ -32,10 +32,10 @@ public class DatabaseSupport extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public long addLog(/*String time,*/ String method, String msg) {
+    public long addLog(String time, String method, String msg) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        //contentValues.put("time", time);
+        contentValues.put("time", time);
         contentValues.put("method", method);
         contentValues.put("message", msg);
 
