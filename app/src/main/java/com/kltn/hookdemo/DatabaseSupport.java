@@ -9,8 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 public class DatabaseSupport extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME ="register.db";
-    public static final String TABLE_NAME ="register_user";
+    public static final String DATABASE_NAME ="logs.db";
+    public static final String TABLE_NAME ="logs_info";
     public static final String COL_ID ="ID";
     public static final String COL_TIME ="Time";
     public static final String COL_EVENT ="Event";
@@ -23,7 +23,7 @@ public class DatabaseSupport extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE TABLE log (ID INTEGER PRIMARY KEY AUTOINCREMENT, method TEXT, message TEXT)");
+        sqLiteDatabase.execSQL("CREATE TABLE logs_info (ID INTEGER PRIMARY KEY AUTOINCREMENT, method TEXT, message TEXT)");
     }
 
     @Override
@@ -39,7 +39,7 @@ public class DatabaseSupport extends SQLiteOpenHelper {
         contentValues.put("method", method);
         contentValues.put("message", msg);
 
-        long res = db.insert("log", null, contentValues);
+        long res = db.insert("logs_info", null, contentValues);
 
         db.close();
         return res;
