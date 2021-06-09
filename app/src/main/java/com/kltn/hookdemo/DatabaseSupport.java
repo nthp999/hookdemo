@@ -23,7 +23,7 @@ public class DatabaseSupport extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE TABLE logs_info (ID INTEGER PRIMARY KEY AUTOINCREMENT, method TEXT, message TEXT)");
+        sqLiteDatabase.execSQL("CREATE TABLE logs_info (ID INTEGER PRIMARY KEY AUTOINCREMENT, time TEXT, method TEXT, message TEXT)");
     }
 
     @Override
@@ -49,17 +49,18 @@ public class DatabaseSupport extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<String> logList = new ArrayList<>();
 
-        Cursor cursorCourses = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-        if (cursorCourses.moveToFirst()) {
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        if (cursor.moveToFirst()) {
             do {
                 // on below line we are adding the data from cursor to our array list.
-                logList.add(cursorCourses.getString(2));
-            } while (cursorCourses.moveToNext());
+                logList.add(cursor.getString(1) + " " + cursor.getString(2)
+                                                            + " " + cursor.getString(3) + '\n');
+            } while (cursor.moveToNext());
             // moving our cursor to next.
         }
         // at last closing our cursor
         // and returning our array list.
-        cursorCourses.close();
+        cursor.close();
         return logList;
 
     }
