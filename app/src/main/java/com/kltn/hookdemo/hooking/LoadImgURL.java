@@ -19,6 +19,8 @@ import static de.robv.android.xposed.XposedHelpers.findClass;
 
 public class LoadImgURL {
     private MyBroadcastSender mybrSender = new MyBroadcastSender();
+    private static String TAG = "KLTN2021";
+    private static boolean SAFE = true;
 
     public void starthook(XC_LoadPackage.LoadPackageParam lpparam) throws NoSuchMethodException {
         try {
@@ -30,7 +32,7 @@ public class LoadImgURL {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             super.beforeHookedMethod(param);
-                            Log.d("KLTN2021", "java.net.URL: Detect HTTP connection");
+                            Log.d(TAG, "java.net.URL: Detect HTTP connection");
                             ArrayList<String> loginfo = new ArrayList<String>();
                             loginfo.add(GetTime.time());
                             loginfo.add("openStream");
@@ -39,7 +41,7 @@ public class LoadImgURL {
                         }
                     });
         } catch (Exception e) {
-            Log.e("KLTN2021", "java.net.URL: " + " ERROR: " + e.getMessage());
+            Log.e(TAG, "java.net.URL: " + " ERROR: " + e.getMessage());
         }
 
         // ================= Hook HTTP Request ==================
@@ -49,11 +51,11 @@ public class LoadImgURL {
         hookAllConstructors(httpUrlConnection, new XC_MethodHook() {
             @Override //trước khi getoutputstream
             protected void beforeHookedMethod(MethodHookParam param) {
-                //nếu không dúng class và len=1 thì thoát
+                // Return if not URL class
                 if (param.args.length != 1 || param.args[0].getClass() != URL.class)
                     return;
-                //log lại url mà app gửi ra ngoài
-                Log.d("KLTN2021 ", "HttpURLConnection: " + param.args[0] + "");
+
+                Log.d(TAG, "HttpURLConnection: " + param.args[0] + "");
 
                 ArrayList<String> loginfo = new ArrayList<String>();
                 loginfo.add(GetTime.time());

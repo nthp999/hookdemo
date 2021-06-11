@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class MyBroadcastSender {
     private static String KEY = "xlog";
+
     public static void brSender (ArrayList<String> data){
         Context context = (Context) AndroidAppHelper.currentApplication();
         try {
@@ -20,4 +21,5 @@ public class MyBroadcastSender {
         } catch (Exception e){
             Log.e("KLTN2021 ", e.getMessage()); }
     }
+
 }

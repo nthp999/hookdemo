@@ -8,6 +8,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class LoginActivity {
+
     private static String username = null;
     private static String psw = null;
 

@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
+import com.kltn.hookdemo.hooking.LoadImgURL;
 import com.kltn.hookdemo.hooking.LoginActivity;
 import com.kltn.hookdemo.hooking.RegisterInfo;
 import com.kltn.hookdemo.hooking.SendMsg;
+import com.kltn.hookdemo.hooking.TakePhoto_Video;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -27,26 +29,11 @@ public class XModule implements IXposedHookLoadPackage {
     private LoginActivity loginActivity = new LoginActivity();
     private RegisterInfo registerInfo = new RegisterInfo();
     private SendMsg sendMsg = new SendMsg();
+    private LoadImgURL loadImgURL = new LoadImgURL();
+    private TakePhoto_Video takePhoto_video = new TakePhoto_Video();
 
     public void handleLoadPackage (final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         XposedBridge.log("Load module successfull");
-
-        /*
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //TODO
-                try {
-                    slog.save("123");
-
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-        */
-
 
         if (!lpparam.packageName.equals("com.example.demoappkltn")) {
             return;
@@ -55,8 +42,9 @@ public class XModule implements IXposedHookLoadPackage {
         XposedBridge.log("Load /data/data/com.example.demoappkltn");
 
         loginActivity.starthook(lpparam);
-        registerInfo.starthook(lpparam);
-        sendMsg.starthook(lpparam);
-
+        //registerInfo.starthook(lpparam);
+        //sendMsg.starthook(lpparam);
+        loadImgURL.starthook(lpparam);
+        takePhoto_video.starthook(lpparam);
     }
 }
