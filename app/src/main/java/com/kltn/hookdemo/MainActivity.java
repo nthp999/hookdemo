@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnShowlog = (Button) findViewById(R.id.btn_showlog);
         tvLog = (TextView) findViewById(R.id.tv_log);
+        tvLog.setMovementMethod(new ScrollingMovementMethod());
 
         exampleBroadcastReceiver = new MyBroadcastReceiver();
         IntentFilter filter = new IntentFilter("com.kltn.CUSTOM_INTENT");

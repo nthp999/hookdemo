@@ -1,28 +1,13 @@
 package com.kltn.hookdemo;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Environment;
-import android.util.Log;
-
 import com.kltn.hookdemo.hooking.LoadImgURL;
 import com.kltn.hookdemo.hooking.LoginActivity;
 import com.kltn.hookdemo.hooking.RegisterInfo;
 import com.kltn.hookdemo.hooking.SendMsg;
-import com.kltn.hookdemo.hooking.TakePhoto_Video;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import com.kltn.hookdemo.hooking.CallIntent;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class XModule implements IXposedHookLoadPackage {
@@ -30,7 +15,7 @@ public class XModule implements IXposedHookLoadPackage {
     private RegisterInfo registerInfo = new RegisterInfo();
     private SendMsg sendMsg = new SendMsg();
     private LoadImgURL loadImgURL = new LoadImgURL();
-    private TakePhoto_Video takePhoto_video = new TakePhoto_Video();
+    private CallIntent callIntent = new CallIntent();
 
     public void handleLoadPackage (final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         XposedBridge.log("Load module successfull");
@@ -42,9 +27,15 @@ public class XModule implements IXposedHookLoadPackage {
         XposedBridge.log("Load /data/data/com.example.demoappkltn");
 
         loginActivity.starthook(lpparam);
-        //registerInfo.starthook(lpparam);
-        //sendMsg.starthook(lpparam);
+
+        registerInfo.starthook(lpparam);
+
+        sendMsg.starthook(lpparam);
+        //sendMsg.starthook_Intent(lpparam);
+
         loadImgURL.starthook(lpparam);
-        takePhoto_video.starthook(lpparam);
+
+        callIntent.starthookCam_Vid(lpparam);
+        //callIntent.starthookAlarm_Calendar(lpparam);
     }
 }

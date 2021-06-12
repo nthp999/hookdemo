@@ -10,8 +10,17 @@ import java.util.ArrayList;
 public class MyBroadcastSender {
     private static String KEY = "xlog";
 
-    public static void brSender (ArrayList<String> data){
+    public static void brSender (String time, String method, String message){
         Context context = (Context) AndroidAppHelper.currentApplication();
+        ArrayList<String> data = new ArrayList<String>();
+
+        if (!data.isEmpty())
+            data.clear();
+
+        data.add(time);
+        data.add(method);
+        data.add(message);
+
         try {
             Intent i = new Intent();
             i.setAction("com.kltn.CUSTOM_INTENT");

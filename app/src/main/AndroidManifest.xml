@@ -33,7 +33,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Datsbase fix 3" />
+            android:value="Test Intent 432" />
         <meta-data
             android:name="xposedminversion"
             android:value="82" />

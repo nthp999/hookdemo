@@ -33,11 +33,10 @@ public class LoadImgURL {
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             super.beforeHookedMethod(param);
                             Log.d(TAG, "java.net.URL: Detect HTTP connection");
-                            ArrayList<String> loginfo = new ArrayList<String>();
-                            loginfo.add(GetTime.time());
-                            loginfo.add("openStream");
-                            loginfo.add("Detect HTTP connection: java.net.URL");
-                            mybrSender.brSender(loginfo);
+
+                            mybrSender.brSender(GetTime.time(),
+                                                "openStream",
+                                                "Detect HTTP connection: java.net.URL");
                         }
                     });
         } catch (Exception e) {
@@ -57,17 +56,13 @@ public class LoadImgURL {
 
                 Log.d(TAG, "HttpURLConnection: " + param.args[0] + "");
 
-                ArrayList<String> loginfo = new ArrayList<String>();
-                loginfo.add(GetTime.time());
-                loginfo.add("HttpURLConnection");
-                loginfo.add("Detect HTTP connection: java.net.HttpURLConnection");
-                mybrSender.brSender(loginfo);
+                mybrSender.brSender(GetTime.time(),
+                                    "HttpURLConnection",
+                                    "HTTP connection: java.net.HttpURLConnection");
 
-                loginfo.clear();
-                loginfo.add(GetTime.time());
-                loginfo.add("HttpURLConnection");
-                loginfo.add("Detect HTTP connection: URL: " + param.args[0]);
-                mybrSender.brSender(loginfo);
+                mybrSender.brSender(GetTime.time(),
+                        "HttpURLConnection",
+                        "HTTP connection: URL: " + param.args[0]);
 
             }
         });
