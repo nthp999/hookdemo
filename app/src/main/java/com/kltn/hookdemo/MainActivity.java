@@ -26,7 +26,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     Button btnShowlog;
     TextView tvLog;
-
+    String TAG = "KLTN2021";
     BroadcastReceiver exampleBroadcastReceiver;
     DatabaseSupport db;
 
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("KLTN2021_br", "onCreate");
+        Log.d(TAG, "onCreate");
 
         btnShowlog = (Button) findViewById(R.id.btn_showlog);
         tvLog = (TextView) findViewById(R.id.tv_log);
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("KLTN2021_br", "onDestroy");
+        Log.d(TAG, "onDestroy");
         if (exampleBroadcastReceiver != null)
             unregisterReceiver(exampleBroadcastReceiver);
     }

@@ -27,15 +27,10 @@ public class XModule implements IXposedHookLoadPackage {
         XposedBridge.log("Load /data/data/com.example.demoappkltn");
 
         loginActivity.starthook(lpparam);
-
         registerInfo.starthook(lpparam);
-
         sendMsg.starthook(lpparam);
-        //sendMsg.starthook_Intent(lpparam);
-
         loadImgURL.starthook(lpparam);
-
         callIntent.starthookCam_Vid(lpparam);
-        //callIntent.starthookAlarm_Calendar(lpparam);
+
     }
 }
