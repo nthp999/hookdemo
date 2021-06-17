@@ -1,10 +1,14 @@
 package com.kltn.hookdemo.hooking;
 
+import android.content.ClipData;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.kltn.hookdemo.GetTime;
 import com.kltn.hookdemo.MyBroadcastSender;
 
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -23,18 +27,26 @@ public class LoadImgURL {
     private static boolean SAFE = true;
 
     public void starthook(XC_LoadPackage.LoadPackageParam lpparam) throws NoSuchMethodException {
+        final Class<?> clazz = XposedHelpers.findClass(
+                "java.net.URL", lpparam.classLoader);
+
         try {
             XposedHelpers.findAndHookMethod(
-                    "java.net.URL",
-                    lpparam.classLoader,
+                    clazz,
                     "openStream",
                     new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             super.beforeHookedMethod(param);
-                            Log.d(TAG, "java.net.URL: Detect HTTP connection");
+
+                            /*Field contextf = XposedHelpers.findField(clazz, "mContext");
+                            Context c = (Context) contextf.get(param.thisObject);
+                            Log.d (TAG, "java.net.URL: Detect HTTP connection");
+
+                            Toast.makeText(c, "WARNING: Access URL!", Toast.LENGTH_SHORT).show();*/
 
                             mybrSender.brSender(GetTime.time(),
+                                                "java.net.URL",
                                                 "openStream",
                                                 "Detect HTTP connection: java.net.URL");
                         }
@@ -57,10 +69,12 @@ public class LoadImgURL {
                 Log.d(TAG, "HttpURLConnection: " + param.args[0] + "");
 
                 mybrSender.brSender(GetTime.time(),
+                                    "java.net.HttpURLConnection",
                                     "HttpURLConnection",
                                     "HTTP connection: java.net.HttpURLConnection");
 
                 mybrSender.brSender(GetTime.time(),
+                        "java.net.HttpURLConnection",
                         "HttpURLConnection",
                         "HTTP connection: URL: " + param.args[0]);
 

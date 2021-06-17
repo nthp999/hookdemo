@@ -33,7 +33,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Findandhookmethod putExtra 1" />
+            android:value="Context FINALLY" />
         <meta-data
             android:name="xposedminversion"
             android:value="82" />

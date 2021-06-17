@@ -12,7 +12,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     final private static String KEY = "xlog";
     private DatabaseSupport db;
 
-    //Code thi hành khi Receiver nhận được Intent
+    //Receiver listens and receives data in background
     @Override
     public void onReceive(Context context, Intent intent) {
         db = new DatabaseSupport(context);
@@ -21,7 +21,8 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         data = intent.getStringArrayListExtra(KEY);
         Log.d("KLTN2021 " ,"DATA RECEIVED:  " + data);
 
-        if (db.addLog(data.get(0), data.get(1), data.get(2)) > 0)
+        // Call function to add data to database
+        if (db.addLog(data.get(0), data.get(1), data.get(2), data.get(3)) > 0)
         {
             Log.i("KLTN2021 ", "Success");
         }

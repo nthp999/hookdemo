@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class MyBroadcastSender {
     private static String KEY = "xlog";
 
-    public static void brSender (String time, String method, String message){
+    public static void brSender (String time, String c_class, String method, String message){
         Context context = (Context) AndroidAppHelper.currentApplication();
         ArrayList<String> data = new ArrayList<String>();
 
@@ -18,6 +18,7 @@ public class MyBroadcastSender {
             data.clear();
 
         data.add(time);
+        data.add(c_class);
         data.add(method);
         data.add(message);
 
@@ -27,7 +28,8 @@ public class MyBroadcastSender {
             i.putStringArrayListExtra(KEY, data);
             i.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
             context.sendBroadcast(i);
-        } catch (Exception e){
+        }
+        catch (Exception e){
             Log.e("KLTN2021 ", e.getMessage()); }
     }
 

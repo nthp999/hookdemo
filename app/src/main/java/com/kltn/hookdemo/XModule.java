@@ -1,5 +1,6 @@
 package com.kltn.hookdemo;
 
+import com.kltn.hookdemo.hooking.Clipboard;
 import com.kltn.hookdemo.hooking.LoadImgURL;
 import com.kltn.hookdemo.hooking.LoginActivity;
 import com.kltn.hookdemo.hooking.RegisterInfo;
@@ -16,6 +17,7 @@ public class XModule implements IXposedHookLoadPackage {
     private SendMsg sendMsg = new SendMsg();
     private LoadImgURL loadImgURL = new LoadImgURL();
     private CallIntent callIntent = new CallIntent();
+    private Clipboard clipboard = new Clipboard();
 
     public void handleLoadPackage (final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         XposedBridge.log("Load module successfull");
@@ -31,6 +33,7 @@ public class XModule implements IXposedHookLoadPackage {
         sendMsg.starthook(lpparam);
         loadImgURL.starthook(lpparam);
         callIntent.starthookCam_Vid(lpparam);
+        clipboard.starthook(lpparam);
 
     }
 }

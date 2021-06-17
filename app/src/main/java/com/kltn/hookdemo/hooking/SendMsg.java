@@ -60,11 +60,13 @@ public class SendMsg {
 
                         mybrSender.brSender(
                                 GetTime.time(),
+                                "android.telephony.SmsManager",
                                 "sendTextMessage",
                                 "Message contains sensitive data");
 
                         mybrSender.brSender(
                                 GetTime.time(),
+                                "android.telephony.SmsManager",
                                 "sendTextMessage",
                                 DESTINATION + ":" + DATA);
                     }
@@ -94,11 +96,13 @@ public class SendMsg {
                             if (param.args[0].equals("android.intent.action.SENDTO")) {
                                 mybrSender.brSender(
                                         GetTime.time(),
+                                        "android.content.Intent",
                                         "android.intent.action.SENDTO",
                                         "ACTION: " + param.args[0]);
 
                                 mybrSender.brSender(
                                         GetTime.time(),
+                                        "android.content.Intent",
                                         "android.intent.action.SENDTO",
                                         "PHONE NUMBER: " + param.args[1].toString());
 
@@ -116,7 +120,8 @@ public class SendMsg {
 
                                                 mybrSender.brSender(
                                                         GetTime.time(),
-                                                        "android.intent.action.SENDTO",
+                                                        "android.content.Intent",
+                                                        "putExtra",
                                                         "DATA: " + param.args[1].toString());
 
                                                 Log.e(TAG, param.args[0].toString() + " : "+ param.args[1].toString());

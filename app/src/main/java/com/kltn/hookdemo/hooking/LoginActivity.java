@@ -13,7 +13,6 @@ public class LoginActivity {
     private static String psw = null;
 
     public void starthook(XC_LoadPackage.LoadPackageParam lpparam) throws NoSuchMethodException {
-        XposedBridge.log("/data/data/com.example.demoappkltn loaded");
 
         try{
             XC_MethodHook info = new XC_MethodHook() {

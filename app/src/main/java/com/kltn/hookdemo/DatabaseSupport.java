@@ -23,7 +23,7 @@ public class DatabaseSupport extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE TABLE logs_info (ID INTEGER PRIMARY KEY AUTOINCREMENT, time TEXT, method TEXT, message TEXT)");
+        sqLiteDatabase.execSQL("CREATE TABLE logs_info (ID INTEGER PRIMARY KEY AUTOINCREMENT, time TEXT, class TEXT, method_action TEXT, message TEXT)");
     }
 
     @Override
@@ -32,11 +32,13 @@ public class DatabaseSupport extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public long addLog(String time, String method, String msg) {
+    // Add data into database
+    public long addLog(String time, String c_class, String method, String msg) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("time", time);
-        contentValues.put("method", method);
+        contentValues.put("class", c_class);
+        contentValues.put("method_action", method);
         contentValues.put("message", msg);
 
         long res = db.insert("logs_info", null, contentValues);
@@ -45,6 +47,7 @@ public class DatabaseSupport extends SQLiteOpenHelper {
         return res;
     }
 
+    // Get data from database
     public ArrayList<String> getLog() {
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<String> logList = new ArrayList<>();
@@ -53,8 +56,10 @@ public class DatabaseSupport extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 // on below line we are adding the data from cursor to our array list.
-                logList.add(cursor.getString(1) + " " + cursor.getString(2)
-                                                            + " " + cursor.getString(3) + '\n');
+                logList.add(cursor.getString(1)
+                        + " " + cursor.getString(2)
+                        + " " + cursor.getString(3)
+                        + " " + cursor.getString(4) +'\n');
             } while (cursor.moveToNext());
             // moving our cursor to next.
         }

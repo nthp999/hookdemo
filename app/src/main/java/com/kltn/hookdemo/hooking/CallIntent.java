@@ -32,22 +32,25 @@ public class CallIntent {
 
                     if (param.args[0].equals("android.media.action.IMAGE_CAPTURE")) {
                         mybrSender.brSender(GetTime.time(),
+                                "android.content.Intent",
                                 "android.media.action.IMAGE_CAPTURE",
                                 "Action: android.media.action.IMAGE_CAPTURE");
                         Log.d(TAG, "android.media.action.IMAGE_CAPTURE");
                     }
                     else if (param.args[0].equals("android.media.action.VIDEO_CAPTURE")) {
                         mybrSender.brSender(GetTime.time(),
+                                "android.content.Intent",
                                 "android.media.action.VIDEO_CAPTURE",
-                                "Action: android.media.action.VIDEO_CAPTURE");
+                                "INTENT ACTION: VIDEO_CAPTURE");
                         Log.d(TAG, "android.media.action.VIDEO_CAPTURE");
                     }
 /*                    else if (param.args[0].equals("android.intent.action.SENDTO"))
                         Log.d(TAG, "android.intent.action.SENDTO");*/
                     else if (param.args[0].equals("android.intent.action.SET_ALARM")) {
                         mybrSender.brSender(GetTime.time(),
+                                "android.content.Intent",
                                 "android.intent.action.SET_ALARM" ,
-                                "Action: android.intent.action.SET_ALARM");
+                                "INTENT ACTION: SET_ALARM");
                         Log.d(TAG, "android.intent.action.SET_ALARM");
                     }
                 }
