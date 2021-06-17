@@ -40,13 +40,14 @@ public class Clipboard {
                             Context c = (Context) contextf.get(param.thisObject);
                             Log.d (TAG, "CLIPBOARD: " + clipData.getItemAt(0).coerceToText(c));
 
-                            Toast.makeText(c, "WARNING: Access Clipboard!", Toast.LENGTH_LONG)
+                            Toast.makeText(c, "WARNING: Access Clipboard!", Toast.LENGTH_SHORT)
                                     .show();
 
                             mybrSender.brSender(
                                     GetTime.time(),
+                                    "android.content.ClipboardManager",
                                     "getPrimaryClip",
-                                    "Access Clipboard");
+                                    "CLIPBOARD: " + clipData.getItemAt(0).coerceToText(c).toString());
                         }
             });
         } catch (Exception e) {
