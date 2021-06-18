@@ -38,16 +38,14 @@ public class Clipboard {
 
                             ClipData clipData = (ClipData) param.getResult();
                             Context c = (Context) contextf.get(param.thisObject);
+                            String DATA = clipData.getItemAt(0).coerceToText(c).toString();
+
                             Log.d (TAG, "CLIPBOARD: " + clipData.getItemAt(0).coerceToText(c));
 
-                            Toast.makeText(c, "WARNING: Access Clipboard!", Toast.LENGTH_SHORT)
-                                    .show();
+                            Toast.makeText(c, "WARNING: Access Clipboard!", Toast.LENGTH_SHORT).show();
 
-                            mybrSender.brSender(
-                                    GetTime.time(),
-                                    "android.content.ClipboardManager",
-                                    "getPrimaryClip",
-                                    "CLIPBOARD: " + clipData.getItemAt(0).coerceToText(c).toString());
+                            mybrSender.brSender(GetTime.time(), "android.content.ClipboardManager",
+                                    "getPrimaryClip", "CLIPBOARD: " + DATA);
                         }
             });
         } catch (Exception e) {
