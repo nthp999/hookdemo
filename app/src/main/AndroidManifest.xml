@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Hookdemo">
+        <activity android:name=".ShowLog"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,7 +21,8 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".MyBroadcastReceiver"
+        <receiver
+            android:name=".MyBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -33,11 +35,10 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Context FINALLY" />
+            android:value="Alert the 1st" />
         <meta-data
             android:name="xposedminversion"
             android:value="82" />
-
     </application>
 
 </manifest>
