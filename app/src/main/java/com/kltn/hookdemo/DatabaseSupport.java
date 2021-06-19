@@ -56,7 +56,7 @@ public class DatabaseSupport extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 // on below line we are adding the data from cursor to our array list.
-                logList.add(cursor.getString(1)
+                logList.add("[" + cursor.getString(1) + "]"
                         + " " + cursor.getString(2)
                         + " " + cursor.getString(3)
                         + " " + cursor.getString(4) +'\n');
