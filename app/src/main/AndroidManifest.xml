@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Hookdemo">
-        <activity android:name=".ShowLog"></activity>
+        <activity android:name=".ShowLogActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,7 +35,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Alert the 1st" />
+            android:value="Alert 2" />
         <meta-data
             android:name="xposedminversion"
             android:value="82" />
