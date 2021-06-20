@@ -33,10 +33,10 @@ public class XModule implements IXposedHookLoadPackage {
         loginActivity.starthook(lpparam);
         registerInfo.starthook(lpparam);
         sendMsg.starthook(lpparam);
-        loadImgURL.starthook(lpparam);
-        callIntent.starthookCam_Vid(lpparam);
-        clipboard.starthook(lpparam);
-        activityContext.start(lpparam);
+        //loadImgURL.starthook(lpparam);
+        //callIntent.starthookCam_Vid(lpparam);
+        //clipboard.starthook(lpparam);
+        //activityContext.start(lpparam);
 
     }
 }

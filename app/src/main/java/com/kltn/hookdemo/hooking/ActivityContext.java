@@ -26,14 +26,14 @@ public class ActivityContext {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 
                 mCurrentActivity = (Activity) param.getResult();
-                Log.e(TAG, "Current Activity : " + mCurrentActivity.getClass().getName());
-                Context ctx = (Context) mCurrentActivity;
+                //Log.d(TAG, "Current Activity : " + mCurrentActivity.getClass().getName());
+                //Context ctx = (Context) mCurrentActivity;
             }
         });
     }
 
     public static Activity getCurrentActivity() {
-        Log.e(TAG, "Current Activity1 : " + mCurrentActivity.getClass().getName());
+        Log.d(TAG, "Current Activity : " + mCurrentActivity.getClass().getName());
         return mCurrentActivity;
     }
 
