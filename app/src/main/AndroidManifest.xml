@@ -35,10 +35,13 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Alert Dialog get thread" />
+            android:value="02072021 (1) : check final" />
         <meta-data
             android:name="xposedminversion"
             android:value="82" />
+        <meta-data
+            android:name="xposedsharedprefs"
+            android:value="true" />
     </application>
 
 </manifest>

@@ -45,10 +45,8 @@ public class LoadImgURL {
 
                             Toast.makeText(c, "WARNING: Access URL!", Toast.LENGTH_SHORT).show();*/
 
-                            mybrSender.brSender(GetTime.time(),
-                                                "java.net.URL",
-                                                "openStream",
-                                                "Detect HTTP connection: java.net.URL");
+                            mybrSender.brSender(GetTime.time(), "java.net.URL",
+                                                "openStream", "Detect HTTP connection: java.net.URL");
                         }
                     });
         } catch (Exception e) {
@@ -60,23 +58,22 @@ public class LoadImgURL {
 
         //hook các constructor của class HttpURLConnection để lấy httpURLConnection
         hookAllConstructors(httpUrlConnection, new XC_MethodHook() {
-            @Override //trước khi getoutputstream
+            @Override
+            //trước khi getoutputstream
             protected void beforeHookedMethod(MethodHookParam param) {
                 // Return if not URL class
                 if (param.args.length != 1 || param.args[0].getClass() != URL.class)
                     return;
 
+                Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "[XPOSED] [WARNING]: HTTP Connection", Toast.LENGTH_SHORT).show();
+
                 Log.d(TAG, "HttpURLConnection: " + param.args[0] + "");
 
-                mybrSender.brSender(GetTime.time(),
-                                    "java.net.HttpURLConnection",
-                                    "HttpURLConnection",
-                                    "HTTP connection: java.net.HttpURLConnection");
+                mybrSender.brSender(GetTime.time(), "java.net.HttpURLConnection",
+                        "HttpURLConnection", "HTTP connection: java.net.HttpURLConnection");
 
-                mybrSender.brSender(GetTime.time(),
-                        "java.net.HttpURLConnection",
-                        "HttpURLConnection",
-                        "HTTP connection: URL: " + param.args[0]);
+                mybrSender.brSender(GetTime.time(), "java.net.HttpURLConnection",
+                        "HttpURLConnection", "HTTP connection: URL: " + param.args[0]);
 
             }
         });

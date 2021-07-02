@@ -1,7 +1,9 @@
 package com.kltn.hookdemo.hooking;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,14 +18,13 @@ import com.kltn.hookdemo.MyBroadcastSender;
 import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.ArrayList;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import com.kltn.hookdemo.MyBroadcastSender;
 
 import static de.robv.android.xposed.XposedBridge.hookAllConstructors;
 import static de.robv.android.xposed.XposedHelpers.findAndHookConstructor;
@@ -31,11 +32,11 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findClass;
 
 public class SendMsg {
-    private static String option = "Warning";
-    private static String intentoption = "Warning";
-    private static String TAG = "KLTN2021";
+    private static boolean warning = true;
+    private static boolean intentWarning = true;
+    private String KEY = null;
+    private final String TAG = "KLTN2021";
 
-    private MyBroadcastSender mybrSender = new MyBroadcastSender();
 
     public void starthook(XC_LoadPackage.LoadPackageParam lpparam, XSharedPreferences xprefs) {
         //option = xprefs.getString("SMS", "");
@@ -51,26 +52,26 @@ public class SendMsg {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     super.beforeHookedMethod(param);
-                    String DESTINATION = param.args[0].toString();
-                    String DATA = param.args[2].toString();
+                    String dst = param.args[0].toString();
+                    String sms = param.args[2].toString();
 
                     Log.d(TAG, "android.telephony.SmsManager：sendTextMessage");
-                    Log.d(TAG, "destinationAddress：" + DESTINATION);
-                    Log.d(TAG, "text：" + DATA);
+                    Log.d(TAG, "destinationAddress：" + dst);
+                    Log.d(TAG, "text：" + sms);
 
                     // Return if it not contains sensitive data
-                    if (!DATA.contains(LoginActivity.getPsw())) {
+                    if (!sms.contains(LoginActivity.getPsw())) {
                         return;
                     }
 
                     // Send SMS data to BroadcastReceiver
-                    mybrSender.brSender(GetTime.time(), "android.telephony.SmsManager",
+                    MyBroadcastSender.brSender(GetTime.time(), "android.telephony.SmsManager",
                             "sendTextMessage", "Message contains sensitive data");
 
-                    /*SAFE = false;               // Unsafe
-                    Log.d(TAG, "SAFE Status: " + SAFE);*/
+                    if (warning)
+                        param.setResult(replaceHookedMethod(param));
 
-                    switch (option) {
+                    /*switch (option1) {
                         case "Allow":   // Allow, display Toast message
                         {
                             Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "[XPOSED][Allow]: Send sensitive sms", Toast.LENGTH_SHORT).show();
@@ -78,20 +79,20 @@ public class SendMsg {
                         }
                         case "Warning":   // Warning, display dialog
                         {
-                            param.setResult(replaceHookedMethod(param));
+
                             break;
                         }
                         default:
                             break;
-                    }
+                    }*/
 
-                    mybrSender.brSender(GetTime.time(), "android.telephony.SmsManager",
-                            "sendTextMessage", "[" + option.toUpperCase() + "]" + DESTINATION + ":" + DATA);
-
-                    option = "Warning";
+                    warning = true;
                 }
 
                 protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+                    String dst = param.args[0].toString();
+                    String sms = param.args[2].toString();
+
                     ActivityContext.getCurrentActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -107,7 +108,12 @@ public class SendMsg {
                                     "Allow",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-                                            option = "Allow";
+                                            Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
+                                                    "[XPOSED] [ALLOW]: Allow to send sensitive sms", Toast.LENGTH_SHORT).show();
+                                            MyBroadcastSender.brSender(GetTime.time(), "android.telephony.SmsManager",
+                                                    "sendTextMessage", "[ALLOW]" + dst + ":" + sms);
+
+                                            warning = false;
                                             SmsManager.getDefault().sendTextMessage(param.args[0].toString(), null, param.args[2].toString(), null, null);
 
                                         }
@@ -117,9 +123,12 @@ public class SendMsg {
                                     "Block",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
+                                            Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
+                                                    "[XPOSED] [BLOCK]: Block to send sensitive sms", Toast.LENGTH_SHORT).show();
+                                            MyBroadcastSender.brSender(GetTime.time(), "android.telephony.SmsManager",
+                                                    "sendTextMessage", "[BLOCK]" + dst + ":" + sms);
+                                            warning = true;
                                             param.setResult(null);
-                                            Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "[XPOSED][Block]: Block sensitive sms", Toast.LENGTH_SHORT).show();
-                                            option = "Block";
                                         }
                                     });
 
@@ -137,135 +146,130 @@ public class SendMsg {
 
         // ======================================= HOOK SMS USING INTENT ===================================================
         try {
-            // Hook Construtor of Intent.class
-            findAndHookConstructor(
-                    Intent.class,
-                    String.class,
-                    Uri.class,
-                    new XC_MethodHook() {
+            findAndHookConstructor(Intent.class, String.class, Uri.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    super.beforeHookedMethod(param);
+                    // Intent action == "android.intent.action.SENDTO"
+                    if (!param.args[0].equals("android.intent.action.SENDTO")) {
+                        return;
+                    }
+
+                    /*// Display warning when Xposed detect to call Intent.class
+                    ActivityContext.getCurrentActivity().runOnUiThread(new Runnable() {
                         @Override
-                        protected void beforeHookedMethod(MethodHookParam param0) throws Throwable {
-                            super.beforeHookedMethod(param0);
+                        public void run() {
+                            Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "WARNING: Intent_SENDTO", Toast.LENGTH_SHORT).show();
+                        }
+                    });*/
 
-                            // Intent action == "android.intent.action.SENDTO"
-                            if (param0.args[0].equals("android.intent.action.SENDTO")) {
+                    // Send log
+                    MyBroadcastSender.brSender(GetTime.time(), "android.content.Intent",
+                            "android.intent.action.SENDTO", "PHONE NUMBER: " + param.args[1].toString());
+                    MyBroadcastSender.brSender(GetTime.time(), "android.content.Intent",
+                            "android.intent.action.SENDTO", "DATA: '" + param.args[0] + "'");
+                    Log.d(TAG,"SENDTO: " + param.args[0] + ":" + param.args[1]);
+                }
+            });
 
-                                // Display warning when Xposed detect to call Intent.class
-                                ActivityContext.getCurrentActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "WARNING: Intent_SENDTO", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+            // =================================== putExtra =====================================================
+            // Hook "putExtra" method - Intent.class
+            findAndHookMethod(Intent.class, "putExtra", String.class, String.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    super.beforeHookedMethod(param);
+                    KEY = param.args[0].toString();
+                    Log.d(TAG,"KEY: " + KEY);
+                }
+            });
 
-                                // Send log
-                                /*mybrSender.brSender(GetTime.time(), "android.content.Intent",
-                                        "android.intent.action.SENDTO", "ACTION: " + param0.args[0]);
+            // ================================ Activity.class - startActivity ===================================
+            findAndHookMethod(Activity.class,"startActivity", Intent.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Log.e(TAG, "startActivity");
+                    super.beforeHookedMethod(param);
 
-                                mybrSender.brSender(GetTime.time(), "android.content.Intent",
-                                        "android.intent.action.SENDTO", "PHONE NUMBER: " + param0.args[1].toString());
-*/
-                                // ============================== putExtra =====================================================
-                                // Hook "putExtra" method - Intent.class
-                                findAndHookMethod(Intent.class, "putExtra", String.class, String.class, new XC_MethodHook() {
-                                    @Override
-                                    protected void beforeHookedMethod(MethodHookParam param1) throws Throwable {
-                                        super.beforeHookedMethod(param1);
-                                        String intentDATA = param1.args[1].toString();
+                    Intent result = (Intent) param.args[0];
+                    String sms = result.getStringExtra(KEY);
 
-                                        // Return if it not contains sensitive data
-                                        if (!intentDATA.contains(LoginActivity.getPsw())) {
-                                            return;
+                    if (!sms.contains(LoginActivity.getPsw()))
+                        return;
+
+                    if (intentWarning)
+                        param.setResult(replaceHookedMethod(param));
+
+                    /*// Allow, block or warning
+                    switch (option2) {
+                        case "Allow":   // Allow, display Toast message
+                        {
+                            Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "[XPOSED][Allow]: Send sensitive sms", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                        case "Warning":   // Warning, display dialog
+                        {
+                            param.setResult(replaceHookedMethod(param));
+                            break;
+                        }
+                        default:
+                            break;
+                    }*/
+
+                    Log.d(TAG, "StartActivity; " + sms);
+                    intentWarning = true;
+                }
+
+                protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+                    Intent result = (Intent) param.args[0];
+                    String sms = result.getStringExtra(KEY);
+
+                    ActivityContext.getCurrentActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Show AlertDialog
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(ActivityContext.getCurrentActivity());
+                            builder1.setTitle("Warning");
+                            builder1.setMessage("Your sms contains sensitive data. Do you want to call Intent.class and send SMS?");
+                            builder1.setCancelable(true);
+
+                            builder1.setPositiveButton(
+                                    "Allow",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "[XPOSED][Allow]: Allow to send sensitive sms", Toast.LENGTH_SHORT).show();
+                                            MyBroadcastSender.brSender(GetTime.time(), "Activity.class", "startActivity",
+                                                    "[ALLOW]" + "DATA: '" + sms + "'");
+                                            intentWarning = false;
+                                            ActivityContext.getCurrentActivity().startActivity((Intent) param.args[0]);
                                         }
+                                    });
 
-                                        // Send log
-                                        mybrSender.brSender(GetTime.time(), "android.content.Intent",
-                                                "SENDTO", "Message contains sensitive data");
-
-                                        // Allow, block or warning
-                                        switch (option) {
-                                            case "Allow":   // Allow, display Toast message
-                                            {
-                                                Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "[XPOSED][Allow]: Send sensitive sms", Toast.LENGTH_SHORT).show();
-                                                break;
-                                            }
-                                            case "Warning":   // Warning, display dialog
-                                            {
-                                                param1.setResult(replaceHookedMethod(param1));
-                                                break;
-                                            }
-                                            default:
-                                                break;
+                            builder1.setNegativeButton(
+                                    "Block",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "[XPOSED][Block]: Block sensitive sms", Toast.LENGTH_SHORT).show();
+                                            MyBroadcastSender.brSender(GetTime.time(), "Activity.class", "startActivity",
+                                                    "[BLOCK]" + "DATA: '" + sms + "'");
+                                            param.setResult(null);
+                                            intentWarning = true;
                                         }
+                                    });
 
-                            /*mybrSender.brSender(GetTime.time(), "android.content.Intent",
-                                    "SENDTO", "[" + option.toUpperCase() + "]" + DESTINATION + ":" + DATA);
-*/
-                                        option = "Warning";
-                                    }
-
-                                    protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-                                        ActivityContext.getCurrentActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Log.e(TAG, "In Replace SENDTO");
-                                                Log.e(TAG, param.args[0] + ":" + param.args[1]);
-
-                                                //Show AlertDialog
-                                                AlertDialog.Builder builder1 = new AlertDialog.Builder(ActivityContext.getCurrentActivity());
-                                                builder1.setTitle("Warning");
-                                                builder1.setMessage("Your sms contains sensitive data. Do you want to call Intent.class and send SMS?");
-                                                builder1.setCancelable(true);
-
-                                                builder1.setPositiveButton(
-                                                        "Allow",
-                                                        new DialogInterface.OnClickListener() {
-                                                            public void onClick(DialogInterface dialog, int id) {
-                                                                option = "Allow";
-                                                                //SmsManager.getDefault().sendTextMessage(param.args[0].toString(), null, param.args[2].toString(), null, null);
-                                                            }
-                                                        });
-
-                                                builder1.setNegativeButton(
-                                                        "Block",
-                                                        new DialogInterface.OnClickListener() {
-                                                            public void onClick(DialogInterface dialog, int id) {
-                                                                param0.setResult(null);
-                                                                Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "[XPOSED][Block]: Block sensitive sms", Toast.LENGTH_SHORT).show();
-                                                                option = "Block";
-                                                            }
-                                                        });
-
-                                                AlertDialog alert11 = builder1.create();
-                                                alert11.show();
-                                            }
-                                        });
-                                        return true;
-                                    }
-
-
-                            /*mybrSender.brSender(GetTime.time(), "android.content.Intent",
-                                    "putExtra", "DATA: '" + param.args[1].toString() + "'");
-
-                            Log.d(TAG, param.args[0].toString() + " : " + param.args[1].toString());*/
-
-
-                                });
-                                //==============================================================================================
-                                //Log.d(TAG, param.args[0].toString());
-                            }
+                            AlertDialog alert11 = builder1.create();
+                            alert11.show();
                         }
                     });
-
-
+                    return true;
+                }
+            });
         }
         catch (Exception e) {
             Log.e(TAG, "ERROR: " + e.getMessage());
         }
     }
 
-
-    private static void write (String msg){
+   /* private static void write (String msg){
         FileWriter fWriter;
         File logFile = new File("/data/data/com.kltn.hookdemo/123.txt");
         Log.i(TAG, "/data/data/com.kltn.hookdemo/123.txt");
@@ -280,6 +284,6 @@ public class SendMsg {
         } catch(Exception e){
             Log.e(TAG, "ERROR: " + e.getMessage());
         }
-    }
+    }*/
 
 }

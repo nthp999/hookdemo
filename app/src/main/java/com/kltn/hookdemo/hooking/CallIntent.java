@@ -2,6 +2,7 @@ package com.kltn.hookdemo.hooking;
 
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.kltn.hookdemo.GetTime;
 import com.kltn.hookdemo.MyBroadcastSender;
@@ -17,8 +18,7 @@ import static de.robv.android.xposed.XposedBridge.hookAllConstructors;
 import static de.robv.android.xposed.XposedHelpers.findClass;
 
 public class CallIntent {
-    private MyBroadcastSender mybrSender = new MyBroadcastSender();
-    private static String TAG = "KLTN2021";
+    private String TAG = "KLTN2021";
 
     public void starthookCam_Vid(XC_LoadPackage.LoadPackageParam lpparam) {
         try {
@@ -31,26 +31,26 @@ public class CallIntent {
                         return;
 
                     if (param.args[0].equals("android.media.action.IMAGE_CAPTURE")) {
-                        mybrSender.brSender(GetTime.time(),
-                                "android.content.Intent",
-                                "android.media.action.IMAGE_CAPTURE",
-                                "Action: android.media.action.IMAGE_CAPTURE");
+                        Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
+                                "[XPOSED] [WARNING]: Open Camera (Image Capture)", Toast.LENGTH_SHORT).show();
+                        MyBroadcastSender.brSender(GetTime.time(), "android.content.Intent",
+                                "android.media.action.IMAGE_CAPTURE", "Open Camera (Image Capture)");
                         Log.d(TAG, "android.media.action.IMAGE_CAPTURE");
                     }
+
                     else if (param.args[0].equals("android.media.action.VIDEO_CAPTURE")) {
-                        mybrSender.brSender(GetTime.time(),
-                                "android.content.Intent",
-                                "android.media.action.VIDEO_CAPTURE",
-                                "INTENT ACTION: VIDEO_CAPTURE");
+                        Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
+                                "[XPOSED] [WARNING]: Open Camera (Video Capture)", Toast.LENGTH_SHORT).show();
+                        MyBroadcastSender.brSender(GetTime.time(), "android.content.Intent",
+                                "android.media.action.VIDEO_CAPTURE", "Open Camera (Video Capture)");
                         Log.d(TAG, "android.media.action.VIDEO_CAPTURE");
                     }
-/*                    else if (param.args[0].equals("android.intent.action.SENDTO"))
-                        Log.d(TAG, "android.intent.action.SENDTO");*/
+
                     else if (param.args[0].equals("android.intent.action.SET_ALARM")) {
-                        mybrSender.brSender(GetTime.time(),
-                                "android.content.Intent",
-                                "android.intent.action.SET_ALARM" ,
-                                "INTENT ACTION: SET_ALARM");
+                        Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
+                                "[XPOSED] [WARNING]: Set Alarm", Toast.LENGTH_SHORT).show();
+                        MyBroadcastSender.brSender(GetTime.time(), "android.content.Intent",
+                                "android.intent.action.SET_ALARM" , "Set Alarm");
                         Log.d(TAG, "android.intent.action.SET_ALARM");
                     }
                 }

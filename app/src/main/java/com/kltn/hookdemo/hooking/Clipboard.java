@@ -42,7 +42,7 @@ public class Clipboard {
 
                             Log.d (TAG, "CLIPBOARD: " + clipData.getItemAt(0).coerceToText(c));
 
-                            Toast.makeText(c, "WARNING: Access Clipboard!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(c, "[XPOSED] [WARNING]: Access Clipboard!", Toast.LENGTH_SHORT).show();
 
                             mybrSender.brSender(GetTime.time(), "android.content.ClipboardManager",
                                     "getPrimaryClip", "CLIPBOARD: " + DATA);
