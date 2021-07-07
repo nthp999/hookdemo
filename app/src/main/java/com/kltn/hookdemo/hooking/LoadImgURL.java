@@ -38,15 +38,8 @@ public class LoadImgURL {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             super.beforeHookedMethod(param);
-
-                            /*Field contextf = XposedHelpers.findField(clazz, "mContext");
-                            Context c = (Context) contextf.get(param.thisObject);
-                            Log.d (TAG, "java.net.URL: Detect HTTP connection");
-
-                            Toast.makeText(c, "WARNING: Access URL!", Toast.LENGTH_SHORT).show();*/
-
-                            mybrSender.brSender(GetTime.time(), "java.net.URL",
-                                                "openStream", "Detect HTTP connection: java.net.URL");
+                            MyBroadcastSender.brSender(GetTime.time(), "java.net.URL",
+                                    "openStream", "Detect HTTP connection: java.net.URL");
                         }
                     });
         } catch (Exception e) {
@@ -65,9 +58,17 @@ public class LoadImgURL {
                 if (param.args.length != 1 || param.args[0].getClass() != URL.class)
                     return;
 
-                Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "[XPOSED] [WARNING]: HTTP Connection", Toast.LENGTH_SHORT).show();
-
                 Log.d(TAG, "HttpURLConnection: " + param.args[0] + "");
+
+                ActivityContext.getCurrentActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
+                                "[XPOSED] [WARNING]: HttpConnection", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                param.setResult(null);
 
                 mybrSender.brSender(GetTime.time(), "java.net.HttpURLConnection",
                         "HttpURLConnection", "HTTP connection: java.net.HttpURLConnection");

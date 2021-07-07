@@ -14,8 +14,6 @@ public class ActivityContext {
     private static String TAG = "KLTN2021";
     private static Activity mCurrentActivity;
 
-    Context context = (Context) AndroidAppHelper.currentApplication();
-
     public void start (XC_LoadPackage.LoadPackageParam lpparam){
         Class<?> instrumentation = XposedHelpers.findClass(
                 "android.app.Instrumentation", lpparam.classLoader);
