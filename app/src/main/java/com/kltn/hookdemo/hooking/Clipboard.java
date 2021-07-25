@@ -19,11 +19,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import static de.robv.android.xposed.XposedBridge.hookAllConstructors;
 
 public class Clipboard {
-
-    private MyBroadcastSender mybrSender = new MyBroadcastSender();
     private static String TAG = "KLTN2021";
 
-    public void starthook(XC_LoadPackage.LoadPackageParam lpparam) {
+    public static void starthook(XC_LoadPackage.LoadPackageParam lpparam) {
         try {
             final Class<?> clazz = XposedHelpers.findClass(
                     "android.content.ClipboardManager", lpparam.classLoader);
@@ -44,7 +42,7 @@ public class Clipboard {
 
                             Toast.makeText(c, "[XPOSED] [WARNING]: Access Clipboard!", Toast.LENGTH_SHORT).show();
 
-                            mybrSender.brSender(GetTime.time(), "android.content.ClipboardManager",
+                            MyBroadcastSender.brSender(GetTime.time(), "android.content.ClipboardManager",
                                     "getPrimaryClip", "CLIPBOARD: " + DATA);
                         }
             });

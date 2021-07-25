@@ -14,7 +14,7 @@ public class ActivityContext {
     private static String TAG = "KLTN2021";
     private static Activity mCurrentActivity;
 
-    public void start (XC_LoadPackage.LoadPackageParam lpparam){
+    public static void start (XC_LoadPackage.LoadPackageParam lpparam){
         Class<?> instrumentation = XposedHelpers.findClass(
                 "android.app.Instrumentation", lpparam.classLoader);
 
@@ -31,7 +31,7 @@ public class ActivityContext {
     }
 
     public static Activity getCurrentActivity() {
-        Log.d(TAG, "Current Activity : " + mCurrentActivity.getClass().getName());
+        //Log.d(TAG, "Current Activity : " + mCurrentActivity.getClass().getName());
         return mCurrentActivity;
     }
 
