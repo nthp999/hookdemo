@@ -4,6 +4,7 @@ import android.app.AndroidAppHelper;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.kltn.hookdemo.hooking.ActivityContext;
 
@@ -46,7 +47,13 @@ public class FileUtils {
                 boolean created = resultsFile.createNewFile();
                 if (!created) {
                     XposedBridge.log("Failed to create results file. Path: " + resultsFile.getAbsolutePath());
-                    //return false;
+                    ActivityContext.getCurrentActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
+                                    "You haven't added the blacklist to the system yet. The system will be alert automatically", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
             }
 

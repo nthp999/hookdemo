@@ -7,12 +7,14 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+
 public class LoginActivity {
 
     private static String username = null;
     private static String psw = null;
 
-    public void starthook(XC_LoadPackage.LoadPackageParam lpparam) throws NoSuchMethodException {
+    public static void starthook(XC_LoadPackage.LoadPackageParam lpparam) throws NoSuchMethodException {
 
         try{
             XC_MethodHook info = new XC_MethodHook() {
@@ -26,7 +28,7 @@ public class LoginActivity {
                 }
             };
 
-            XposedHelpers.findAndHookMethod("com.example.demoappkltn.DatabaseSupport", lpparam.classLoader,
+            findAndHookMethod("com.example.demoappkltn.DatabaseSupport", lpparam.classLoader,
                     "check_User", String.class, String.class, info);
 
         } catch (Exception e){

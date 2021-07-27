@@ -24,11 +24,11 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findClass;
 
 public class CallIntent {
-    private String TAG = "KLTN2021";
-    private static boolean sms_warning = true;
-    private String KEY = null;
+    private static String TAG = "KLTN2021";
+    private static boolean WARNING_FLAG = true;
+    private static String KEY = null;
 
-    public void starthookCam_Vid(XC_LoadPackage.LoadPackageParam lpparam) {
+    public static void starthookCam_Vid(XC_LoadPackage.LoadPackageParam lpparam) {
         try {
             // ================================= Intent.class Constructor ==============================================
             findAndHookConstructor(Intent.class, String.class, Uri.class, new XC_MethodHook() {
@@ -75,11 +75,11 @@ public class CallIntent {
                         String sms = result.getStringExtra(KEY);
                         if (!sms.contains(LoginActivity.getPsw()))
                             return;
-                        if (sms_warning)
+                        if (WARNING_FLAG)
                             param.setResult(replaceHookedMethod(param));
 
                         Log.d(TAG, "StartActivity; " + sms);
-                        sms_warning = true;
+                        WARNING_FLAG = true;
                     }
                     else if (action.equals("android.intent.action.SET_ALARM")) {
                         Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
@@ -117,7 +117,7 @@ public class CallIntent {
                                             Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(), "[XPOSED][Allow]: Send sensitive sms", Toast.LENGTH_SHORT).show();
                                             MyBroadcastSender.brSender(GetTime.time(), "Activity.class", "startActivity",
                                                     "[ALLOW]" + "DATA: '" + sms + "'");
-                                            sms_warning = false;
+                                            WARNING_FLAG = false;
                                             ActivityContext.getCurrentActivity().startActivity((Intent) param.args[0]);
                                         }
                                     });
@@ -130,7 +130,7 @@ public class CallIntent {
                                             MyBroadcastSender.brSender(GetTime.time(), "Activity.class", "startActivity",
                                                     "[BLOCK]" + "DATA: '" + sms + "'");
                                             param.setResult(null);
-                                            sms_warning = true;
+                                            WARNING_FLAG = true;
                                         }
                                     });
 
@@ -155,24 +155,24 @@ public class CallIntent {
                     Intent result = (Intent) param.args[0];
                     String action = result.getAction();
 
-                    if (action.equals("android.media.action.IMAGE_CAPTURE")) {
+                    if (action == "android.media.action.IMAGE_CAPTURE") {
                         Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
                                 "[XPOSED] [WARNING]: Open Camera (Image Capture)", Toast.LENGTH_SHORT).show();
                         MyBroadcastSender.brSender(GetTime.time(), "android.app.Activity",
-                                "startActivity", "Open Camera (Image Capture)");
-                        Log.d(TAG, "startActivity");
+                                "startActivityForResult", "Open Camera (Image Capture)");
+                        Log.d(TAG, "startActivityForResult");
                     }
-                    else if (action.equals("android.media.action.VIDEO_CAPTURE")) {
+                    else if (action == "android.media.action.VIDEO_CAPTURE") {
                         Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
                                 "[XPOSED] [WARNING]: Open Camera (Video Capture)", Toast.LENGTH_SHORT).show();
                         MyBroadcastSender.brSender(GetTime.time(), "android.app.Activity",
-                                "startActivity", "Open Camera (Video Capture)");
-                        Log.d(TAG, "startActivity");
+                                "startActivityForResult", "Open Camera (Video Capture)");
+                        Log.d(TAG, "startActivityForResult");
                     }
                 }
             });
         } catch (Exception e) {
-            Log.e(TAG, "ERROR: " + e.getMessage());
+            XposedBridge.log("ERROR: " + e.getMessage());
         }
     }
 }

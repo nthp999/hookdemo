@@ -8,7 +8,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class RegisterInfo {
-    public void starthook(XC_LoadPackage.LoadPackageParam lpparam) throws  Exception {
+    public static void starthook(XC_LoadPackage.LoadPackageParam lpparam) throws  Exception {
         XposedBridge.log("/data/data/com.example.demoappkltn loaded");
 
         try{

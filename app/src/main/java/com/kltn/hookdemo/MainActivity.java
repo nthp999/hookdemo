@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 db = new DatabaseSupport(MainActivity.this);
                 ArrayList<String> list = db.getLog();
+                tvLog.setText(null);
                 for (int i = 0; i < list.size(); i++)
                     tvLog.append(list.get(i));
 
