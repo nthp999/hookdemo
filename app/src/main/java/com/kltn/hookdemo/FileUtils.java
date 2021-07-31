@@ -26,7 +26,6 @@ public class FileUtils {
     private static final String DATA_DIRECTORY = "/data/data";
     private static final String SCAN_FLAG_FILENAME = "files";
     private static final String RESULTS_FILENAME = "test.txt";
-    private static boolean CHECK_FLAG = false;
 
     public static boolean shouldScan(String packageName) {
         BaseService baseService = SELinuxHelper.getAppDataFileService();
@@ -34,7 +33,7 @@ public class FileUtils {
     }
 
     public static boolean saveStringToResultsFile(String packageName, String inputURL) {
-
+        boolean CHECK_FLAG = false;
 
         try {
             //Context mContext = ActivityContext.getCurrentActivity().getApplicationContext();
@@ -77,16 +76,12 @@ public class FileUtils {
             if (fileContent.contains(inputURL)) {
                Log.e("KLTN2021", "Doc va phat hien duoc du lieu nhay cam");
                CHECK_FLAG = true;
-                //Append url to the file
-                //FileWriter fw = new FileWriter(resultsFile, true);
-                //BufferedWriter bw = new BufferedWriter(fw);
-                //bw.write(stringToWrite + "\n");
-                //bw.close();
             }
 
         } catch (IOException e) {
             XposedBridge.log(e.getMessage());
         }
+        Log.w("KLTN2021", "CHECK: " + CHECK_FLAG);
         return CHECK_FLAG;
     }
 }

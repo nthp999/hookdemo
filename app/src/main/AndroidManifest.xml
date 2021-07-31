@@ -26,7 +26,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Solution for application activity monitoring on Android mobile 123" />
+            android:value="Solution for application activity monitoring on Android mobile (final)" />
         <meta-data
             android:name="xposedminversion"
             android:value="90" />

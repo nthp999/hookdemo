@@ -11,7 +11,6 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class ActivityContext {
-    private static String TAG = "KLTN2021";
     private static Activity mCurrentActivity;
 
     public static void start (XC_LoadPackage.LoadPackageParam lpparam){
@@ -31,7 +30,6 @@ public class ActivityContext {
     }
 
     public static Activity getCurrentActivity() {
-        //Log.d(TAG, "Current Activity : " + mCurrentActivity.getClass().getName());
         return mCurrentActivity;
     }
 

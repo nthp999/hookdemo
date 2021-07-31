@@ -19,7 +19,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import static de.robv.android.xposed.XposedBridge.hookAllConstructors;
 
 public class Clipboard {
-    private static String TAG = "KLTN2021";
+    private static final String TAG = "KLTN2021";
 
     public static void starthook(XC_LoadPackage.LoadPackageParam lpparam) {
         try {
@@ -46,8 +46,8 @@ public class Clipboard {
                                     "getPrimaryClip", "CLIPBOARD: " + DATA);
                         }
             });
-        } catch (Exception e) {
-            Log.e(TAG, "android.content.ClipboardManager: " + " ERROR: " + e);
+        } catch (Error e) {
+            Log.e(TAG, "ERROR: " + e.getMessage());
         }
     }
 }

@@ -32,8 +32,8 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findClass;
 
 public class SendMsg {
-    private static boolean warning = true;
-    private static String TAG = "KLTN2021";
+    private static boolean WARNING_FLAG = true;
+    private static final String TAG = "KLTN2021";
 
     public static void starthook(XC_LoadPackage.LoadPackageParam lpparam) {
         //option = xprefs.getString("SMS", "");
@@ -60,13 +60,11 @@ public class SendMsg {
                     if (!sms.contains(LoginActivity.getPsw()))
                         return;
 
-                    Log.w(TAG, "(1) stt: " + warning);
                     // Show AlertDialog if warning = true
-                    if (warning)
+                    if (WARNING_FLAG)
                         param.setResult(replaceHookedMethod(param));
 
-                    Log.w(TAG, "(3) stt: " + warning);
-                    warning = true;
+                    WARNING_FLAG = true;
                 }
 
                 protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
@@ -94,9 +92,8 @@ public class SendMsg {
                                             MyBroadcastSender.brSender(GetTime.time(), "android.telephony.SmsManager",
                                                     "sendTextMessage", "[ALLOW]" + dst + ":" + sms);
 
-                                            warning = false;
-                                            Log.w(TAG, "(2) stt: " + warning);
-                                            //SmsManager.getDefault().sendTextMessage(param.args[0].toString(), null, param.args[2].toString(), null, null);
+                                            WARNING_FLAG = false;
+                                            SmsManager.getDefault().sendTextMessage(param.args[0].toString(), null, param.args[2].toString(), null, null);
                                         }
                                     });
 
@@ -108,7 +105,7 @@ public class SendMsg {
                                                     "[XPOSED] [BLOCK]: Block sensitive message", Toast.LENGTH_SHORT).show();
                                             MyBroadcastSender.brSender(GetTime.time(), "android.telephony.SmsManager",
                                                     "sendTextMessage", "[BLOCK]" + dst + ":" + sms);
-                                            warning = true;
+                                            WARNING_FLAG = true;
                                             param.setResult(null);
                                         }
                                     });
@@ -118,31 +115,12 @@ public class SendMsg {
                         }
                     });
                     return true;
-
                 }
             });
         } catch (Exception e) {
-            XposedBridge.log("sendTextMessage: " + " ERROR: " + e.getMessage());
+            Log.e("KLTN2021", "ERROR: " + e.getMessage());
         }
 
 
     }
-
-   /* private static void write (String msg){
-        FileWriter fWriter;
-        File logFile = new File("/data/data/com.kltn.hookdemo/123.txt");
-        Log.i(TAG, "/data/data/com.kltn.hookdemo/123.txt");
-        if (!logFile.exists()) {
-            return;
-        }
-        try {
-            fWriter = new FileWriter(logFile, true);
-            fWriter.write(msg);
-            fWriter.flush();
-            fWriter.close();
-        } catch(Exception e){
-            Log.e(TAG, "ERROR: " + e.getMessage());
-        }
-    }*/
-
 }

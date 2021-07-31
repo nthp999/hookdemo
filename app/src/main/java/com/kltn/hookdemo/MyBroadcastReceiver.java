@@ -16,7 +16,6 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         db = new DatabaseSupport(context);
-        //Log.d("KLTN2021 " ,"==> Broadcast Receiver");
         ArrayList<String> data;
         data = intent.getStringArrayListExtra(KEY);
         Log.d("KLTN2021 " ,"DATA RECEIVED:  " + data);

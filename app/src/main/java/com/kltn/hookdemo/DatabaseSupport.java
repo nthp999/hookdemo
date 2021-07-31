@@ -11,10 +11,10 @@ import java.util.ArrayList;
 public class DatabaseSupport extends SQLiteOpenHelper {
     public static final String DATABASE_NAME ="logs.db";
     public static final String TABLE_NAME ="logs_info";
-    public static final String COL_ID ="ID";
+    /*public static final String COL_ID ="ID";
     public static final String COL_TIME ="Time";
     public static final String COL_EVENT ="Event";
-    public static final String COL_MSG ="Message";
+    public static final String COL_MSG ="Message";*/
 
     // Construstor of Database
     public DatabaseSupport(Context context) {

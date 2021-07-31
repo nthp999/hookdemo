@@ -11,20 +11,14 @@ import android.widget.Toast;
 import com.kltn.hookdemo.GetTime;
 import com.kltn.hookdemo.MyBroadcastSender;
 
-import java.util.ArrayList;
-
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
-import static de.robv.android.xposed.XposedBridge.hookAllConstructors;
 import static de.robv.android.xposed.XposedHelpers.findAndHookConstructor;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
-import static de.robv.android.xposed.XposedHelpers.findClass;
 
 public class CallIntent {
-    private static String TAG = "KLTN2021";
+    private static final String TAG = "KLTN2021";
     private static boolean WARNING_FLAG = true;
     private static String KEY = null;
 
@@ -68,32 +62,32 @@ public class CallIntent {
 
                     Intent result = (Intent) param.args[0];
                     String action = result.getAction();
-                    Log.e(TAG, "Action: " + action);
 
-                    if (action.equals("android.intent.action.SENDTO"))
-                    {
-                        String sms = result.getStringExtra(KEY);
-                        if (!sms.contains(LoginActivity.getPsw()))
-                            return;
-                        if (WARNING_FLAG)
-                            param.setResult(replaceHookedMethod(param));
+                    switch (action) {
+                        case "android.intent.action.SENDTO":
+                            String sms = result.getStringExtra(KEY);
+                            if (!sms.contains(LoginActivity.getPsw()))
+                                return;
+                            if (WARNING_FLAG)
+                                param.setResult(replaceHookedMethod(param));
 
-                        Log.d(TAG, "StartActivity; " + sms);
-                        WARNING_FLAG = true;
-                    }
-                    else if (action.equals("android.intent.action.SET_ALARM")) {
-                        Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
-                                "[XPOSED] [WARNING]: Set Alarm", Toast.LENGTH_SHORT).show();
-                        MyBroadcastSender.brSender(GetTime.time(), "android.app.Activity",
-                                "startActivity" , "Set Alarm");
-                        Log.d(TAG, "startActivity");
-                    }
-                    else if (action.equals("android.intent.action.VIEW")) {
-                        Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
-                                "[XPOSED] [WARNING]: View Calendar", Toast.LENGTH_SHORT).show();
-                        MyBroadcastSender.brSender(GetTime.time(), "android.app.Activity",
-                                "startActivity" , "View Calendar");
-                        Log.d(TAG, "startActivity");
+                            Log.d(TAG, "StartActivity; " + sms);
+                            WARNING_FLAG = true;
+                            break;
+                        case "android.intent.action.SET_ALARM":
+                            Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
+                                    "[XPOSED] [WARNING]: Set Alarm", Toast.LENGTH_SHORT).show();
+                            MyBroadcastSender.brSender(GetTime.time(), "android.app.Activity",
+                                    "startActivity", "Set Alarm");
+                            Log.d(TAG, "startActivity");
+                            break;
+                        case "android.intent.action.VIEW":
+                            Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
+                                    "[XPOSED] [WARNING]: View Calendar", Toast.LENGTH_SHORT).show();
+                            MyBroadcastSender.brSender(GetTime.time(), "android.app.Activity",
+                                    "startActivity", "View Calendar");
+                            Log.d(TAG, "startActivity");
+                            break;
                     }
                 }
 
@@ -142,7 +136,7 @@ public class CallIntent {
                 }
             });
         }
-        catch (Exception e) {
+        catch (Error e) {
             Log.e(TAG, "ERROR: " + e.getMessage());
         }
 
@@ -155,14 +149,14 @@ public class CallIntent {
                     Intent result = (Intent) param.args[0];
                     String action = result.getAction();
 
-                    if (action == "android.media.action.IMAGE_CAPTURE") {
+                    if (action.equals("android.media.action.IMAGE_CAPTURE")) {
                         Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
                                 "[XPOSED] [WARNING]: Open Camera (Image Capture)", Toast.LENGTH_SHORT).show();
                         MyBroadcastSender.brSender(GetTime.time(), "android.app.Activity",
                                 "startActivityForResult", "Open Camera (Image Capture)");
                         Log.d(TAG, "startActivityForResult");
                     }
-                    else if (action == "android.media.action.VIDEO_CAPTURE") {
+                    else if (action.equals("android.media.action.VIDEO_CAPTURE")) {
                         Toast.makeText(ActivityContext.getCurrentActivity().getApplicationContext(),
                                 "[XPOSED] [WARNING]: Open Camera (Video Capture)", Toast.LENGTH_SHORT).show();
                         MyBroadcastSender.brSender(GetTime.time(), "android.app.Activity",
@@ -171,8 +165,8 @@ public class CallIntent {
                     }
                 }
             });
-        } catch (Exception e) {
-            XposedBridge.log("ERROR: " + e.getMessage());
+        } catch (Error e) {
+            Log.e(TAG, "ERROR: " + e.getMessage());
         }
     }
 }

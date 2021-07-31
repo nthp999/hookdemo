@@ -28,12 +28,12 @@ public class XModule implements IXposedHookLoadPackage {
     private static final String MONITOR_PACKAGENAME = "com.kltn.hookdemo";
 
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+        // Check API Version
         if (Build.VERSION.SDK_INT != 30) {
             return;
         }
 
-        //ArrayList<String> blacklist = FileUtils.saveStringToResultsFile(MONITOR_PACKAGENAME);
-
+        // Check hooking package
         if (lpparam.appInfo == null || (lpparam.appInfo.flags & (ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP)) != 0) {
             return;
         } else if (lpparam.isFirstApplication && !MONITOR_PACKAGENAME.equals(lpparam.packageName)) {

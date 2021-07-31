@@ -40,12 +40,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate");
 
-        /*pref = this.getSharedPreferences("user_setting", Context.MODE_WORLD_READABLE);
-        File prefsFile = new File("/data/data/com.kltn.hookdemo/shared_prefs/user_setting.xml");
-        prefsFile.setReadable(true, false);         // Set readable
-        if (prefsFile.exists() == false)
-            Log.e(TAG, "File does not exsit");*/
-
         btnShowlog = (Button) findViewById(R.id.btn_showlog);
         tvLog = (TextView) findViewById(R.id.tv_log);
         tvLog.setMovementMethod(new ScrollingMovementMethod());
@@ -73,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     @Override
     protected void onDestroy() {
