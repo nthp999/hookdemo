@@ -24,7 +24,6 @@ import de.robv.android.xposed.services.BaseService;
 
 
 public class XModule implements IXposedHookLoadPackage {
-    private static final String PACKAGE_NAME = "com.example.demoappkltn";
     private static final String MONITOR_PACKAGENAME = "com.kltn.hookdemo";
 
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
@@ -50,20 +49,3 @@ public class XModule implements IXposedHookLoadPackage {
 
 
 }
-
-
-        /*findAndHookMethod(View.class ,"setOnClickListener", View.OnClickListener.class, new XC_MethodHook() {
-
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                View view = (View)param.thisObject;
-                //ImageView
-                String Str = null;
-                if (view instanceof TextView){
-                    Str = ((TextView)view).getText().toString();
-                }
-                int btnId = view.getId();
-                Log.i("ButtonInfo", Str + " " + btnId);
-                //XposedBridge.log(Str + ";" + "Id:" + btnId);
-            }
-        });*/
